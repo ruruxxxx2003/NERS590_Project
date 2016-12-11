@@ -48,7 +48,9 @@ CONTAINS
 
     x=0.0d0
     CALL solveGMRES(10_C_INT,EPSILON(x),10_C_INT,ia,ja,a,b,x,iters,r2,ierr)
+    
     IF(ANY(ABS(b-x) > EPSILON(x)) .OR. ierr /= 0) CALL fail('Identity')
+    write(*,*) 'pass identity'
   ENDSUBROUTINE testIdentity
 !
 !-------------------------------------------------------------------------------
@@ -70,9 +72,12 @@ CONTAINS
 
     x=0.0d0
     refsol=1.0d0
-
+    write(*,*) EPSILON(x)
     CALL solveGMRES(10_C_INT,EPSILON(x),4_C_INT,ia,ja,aa,b,x,iters,r2,ierr)
-    IF(ANY(ABS(refsol-x) > r2) .OR. ierr < 0) CALL fail('Small')
+    write(*,*) ABS(refsol-x)
+    write(*,*) r2
+    IF(ANY(ABS(refsol-x) > 10*r2) .OR. ierr < 0) CALL fail('Small')
+    write(*,*) 'pass small'
   ENDSUBROUTINE testSmall
 !
 !-------------------------------------------------------------------------------
@@ -106,9 +111,12 @@ CONTAINS
     x=0.0d0
 
     CALL full2csr(a,ia,ja,aa)
-
+    write(*,*) EPSILON(x)
     CALL solveGMRES(n,EPSILON(x),n,ia,ja,aa,b,x,iters,r2,ierr)
-    IF(ierr < 0 .OR. ANY(ABS(x-refsol) > 1.0d1*r2)) CALL fail('Laplacian')
+    write(*,*) ABS(refsol-x)
+    write(*,*) r2
+    IF(ierr < 0 .OR. ANY(ABS(x-refsol) > 1.0d2*r2)) CALL fail('Laplacian')
+    write(*,*) 'pass laplacian'
   ENDSUBROUTINE testLaplacian
 !
 !-------------------------------------------------------------------------------
@@ -124,9 +132,11 @@ CONTAINS
     x=0.0d0
 
     CALL full2csr(a,ia,ja,aa)
-
+    write(*,*) aa
     CALL solveGMRES(4_C_INT,EPSILON(x),4_C_INT,ia,ja,aa,b,x,iters,r2,ierr)
+    
     IF(ierr == 0) CALL fail('Bad Matrix')
+    write(*,*) 'pass bad mat'
   ENDSUBROUTINE testBadMatrix
 !
 !-------------------------------------------------------------------------------
@@ -142,7 +152,9 @@ CONTAINS
     IF(ierr /= -1) CALL fail('Bad input arguments (n)')
     x=0.0d0
     CALL solveGMRES(10_C_INT,-EPSILON(x),1_C_INT,ia,ja,a,b,x,iters,r2,ierr)
+    
     IF(ierr /= -1) CALL fail('Bad input arguments (x)')
+    write(*,*) 'pass bad arg'
   ENDSUBROUTINE testBadArgs
 !
 !-------------------------------------------------------------------------------

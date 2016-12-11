@@ -39,6 +39,7 @@ CONTAINS
     CALL solveGaussElim(10_C_INT,a,b,x,ierr)
 
     IF(ANY(ABS(b-x) > EPSILON(x)) .OR. ierr /= 0) CALL fail('Identity')
+    write(*,*) 'pass1'
   ENDSUBROUTINE testIdentity
 !
 !-------------------------------------------------------------------------------
@@ -58,6 +59,7 @@ CONTAINS
 
     CALL solveGaussElim(4_C_INT,a,b,x,ierr)
     IF(ANY(ABS(refsol-x) > EPSILON(x)) .OR. ierr /=0) CALL fail('Small')
+    write(*,*) 'pass small'
   ENDSUBROUTINE testSmall
 !
 !-------------------------------------------------------------------------------
@@ -89,6 +91,7 @@ CONTAINS
     x=0.0d0
     
     CALL solveGaussElim(n,a,b,x,ierr)
+    write(*,*) 'pass lap'
     IF(ierr /= 0 .OR. ANY(ABS(x-refsol) > 1d-14)) CALL fail('Laplacian')
   ENDSUBROUTINE testLaplacian
 !
@@ -96,13 +99,14 @@ CONTAINS
   SUBROUTINE testBadMatrix()
     REAL(C_DOUBLE) :: a(4,4),b(4),x(4),refsol(4)
     INTEGER(C_INT) :: ierr
-
     a=1.0d0
     b=(/10.0d0,9.0d0,9.0d0,4.0d0/)
     x=0.0d0
 
     CALL solveGaussElim(4_C_INT,a,b,x,ierr)
+    
     IF(ierr == 0) CALL fail('Bad Matrix')
+    write(*,*) 'pass bad mat'
   ENDSUBROUTINE testBadMatrix
 !
 !-------------------------------------------------------------------------------
@@ -110,6 +114,7 @@ CONTAINS
     INTEGER(C_INT) :: ierr
     REAL(C_DOUBLE) :: a(1,1),b(1),x(1)
     CALL solveGaussElim(0_C_INT,a,b,x,ierr)
+    write(*,*) 'pass bad arg'
     IF(ierr /= -1) CALL fail('Bad input arguments')
   ENDSUBROUTINE testBadArgs
 !
